@@ -1,5 +1,6 @@
-import React from 'react';
+import React from "react";
+import VideoPlayer from "./components/VideoPlayer";
 
 export const App: React.FunctionComponent = () => (
-  <div/>
+  <VideoPlayer src="https://cdn.yoc.com/ad/demo/airbnb.mp4" />
 );
