@@ -1,6 +1,14 @@
-import { SyntheticEvent, useEffect, useRef, useState } from "react";
+import {
+  FunctionComponent,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useIsVisible } from "./hooks";
-const VideoPlayer = (props: any) => {
+import { Props } from "./types";
+
+const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
   const [progress, setProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const isVisible = useIsVisible(videoRef, props.threshold);
@@ -27,7 +35,7 @@ const VideoPlayer = (props: any) => {
       ref={videoRef}
       onTimeUpdate={handleOnTimeUpdate}
       autoPlay={false}
-      muted={true} // to be able to autoplay video
+      muted={true} // to be able to autoplay videoz
     >
       <source src={props.src} type="video/mp4" />
     </video>
