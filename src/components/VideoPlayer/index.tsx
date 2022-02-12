@@ -1,11 +1,13 @@
 import { FunctionComponent, useEffect, useRef, useState } from "react";
-import { useIsVisible } from "./hooks";
+import { useIsVisible, useVisibilityTime } from "./hooks";
 import { Props } from "./types";
 
 const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
   const [progress, setProgress] = useState(0);
+  const [showVisibilityLog, setShowVisibilityLog] = useState(true);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsVisible(videoContainerRef, props.threshold);
+  const visibilityTime = useVisibilityTime(videoContainerRef, props.threshold);
   const handleOnTimeUpdate = (e: Event) => {
     //I don't know if the progress  percentage is required to be strictly correct or not.
     //If it is, progress should be calculated with different method(like using requestAnimationFrame).
@@ -21,6 +23,15 @@ const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
       console.log(`Video has played through ${progress}%`);
     }
   }, [progress]);
+
+  useEffect(() => {
+    if (visibilityTime >= 2000 && showVisibilityLog) {
+      console.log(
+        "The ad has been in the viewport of the browser with 50% of it viewable for 2 seconds in total"
+      );
+      setShowVisibilityLog(false);
+    }
+  }, [visibilityTime]);
   useEffect(() => {
     if (
       !videoContainerRef ||
