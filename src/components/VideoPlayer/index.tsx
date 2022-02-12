@@ -1,44 +1,62 @@
-import {
-  FunctionComponent,
-  SyntheticEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { useIsVisible } from "./hooks";
 import { Props } from "./types";
 
 const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
   const [progress, setProgress] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const isVisible = useIsVisible(videoRef, props.threshold);
-  const handleOnTimeUpdate = (e: SyntheticEvent<HTMLVideoElement>) => {
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const isVisible = useIsVisible(videoContainerRef, props.threshold);
+  const handleOnTimeUpdate = (e: Event) => {
     //I don't know if the progress  percentage is required to be strictly correct or not.
     //If it is, progress should be calculated with different method(like using requestAnimationFrame).
-    const { duration, currentTime } = e.currentTarget;
+    const { duration, currentTime } = e.target as HTMLVideoElement;
     const time = Math.round((currentTime / duration) * 100);
     setProgress(time);
   };
   useEffect(() => {
-    if (!videoRef || !videoRef.current) return;
+    if (
+      !videoContainerRef ||
+      !videoContainerRef.current ||
+      !videoContainerRef.current.children.length
+    )
+      return;
+    const videoElement = videoContainerRef.current
+      .children[0] as HTMLVideoElement;
     if (isVisible) {
-      videoRef.current.play();
+      videoElement.play();
     } else {
-      videoRef.current.pause();
+      videoElement.pause();
     }
-    return () => {};
   }, [isVisible]);
+  useEffect(() => {
+    if (!videoContainerRef || !videoContainerRef.current) return;
+    const videoElement = videoContainerRef.current
+      .children[0] as HTMLVideoElement;
+    videoElement.ontimeupdate = handleOnTimeUpdate;
+  }, [videoContainerRef]);
   return (
+    /**
+     * There is an open issue about the video element's attributes: https://github.com/facebook/react/issues/10389
+     * React doesn't garantee that all attributes will be written to the actual dom.
+     * However, safari prevents autoplaying videos without any user interaction.
+     * So video element added to the actual dom directly.
+     */
+    <div
+      ref={videoContainerRef}
+      dangerouslySetInnerHTML={{
+        __html: `
     <video
+      loop
+      muted
+      autoplay
+      playsinline
+      preload="metadata"
       width="100%"
-      controls
-      ref={videoRef}
-      onTimeUpdate={handleOnTimeUpdate}
-      autoPlay={false}
-      muted={true} // to be able to autoplay videoz
     >
-      <source src={props.src} type="video/mp4" />
-    </video>
+    <source src="${props.src}" type="video/mp4" />
+    </video>`,
+      }}
+    />
   );
 };
 
