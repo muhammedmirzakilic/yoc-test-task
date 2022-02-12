@@ -14,6 +14,14 @@ const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
     setProgress(time);
   };
   useEffect(() => {
+    const logPoints = [25, 50, 75, 100];
+    if (progress === 1) {
+      console.log("Video has started");
+    } else if (logPoints.indexOf(progress) !== -1) {
+      console.log(`Video has played through ${progress}%`);
+    }
+  }, [progress]);
+  useEffect(() => {
     if (
       !videoContainerRef ||
       !videoContainerRef.current ||
