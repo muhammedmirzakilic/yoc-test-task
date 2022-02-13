@@ -2,7 +2,7 @@ import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 
 export const useIsVisible = (
   ref: RefObject<HTMLElement>,
-  threshold: number[]
+  threshold: number
 ) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -26,7 +26,7 @@ export const useIsVisible = (
 
 export const useVisibilityTime = (
   ref: RefObject<HTMLElement>,
-  threshold: number[]
+  threshold: number
 ) => {
   const [visibilityTime, setVisibilityTime] = useState(0);
   const isVisible = useIsVisible(ref, threshold);

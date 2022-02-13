@@ -23,7 +23,6 @@ const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
       console.log(`Video has played through ${progress}%`);
     }
   }, [progress]);
-
   useEffect(() => {
     if (visibilityTime >= 2000 && showVisibilityLog) {
       console.log(
@@ -34,19 +33,10 @@ const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
     // eslint-disable-next-line
   }, [visibilityTime]);
   useEffect(() => {
-    if (
-      !videoContainerRef ||
-      !videoContainerRef.current ||
-      !videoContainerRef.current.children.length
-    )
-      return;
+    if (!videoContainerRef || !videoContainerRef.current) return;
     const videoElement = videoContainerRef.current
       .children[0] as HTMLVideoElement;
-    if (isVisible) {
-      videoElement.play();
-    } else {
-      videoElement.pause();
-    }
+    isVisible ? videoElement.play() : videoElement.pause();
   }, [isVisible]);
   useEffect(() => {
     if (!videoContainerRef || !videoContainerRef.current) return;
@@ -65,16 +55,12 @@ const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
       ref={videoContainerRef}
       dangerouslySetInnerHTML={{
         __html: `
-    <video
-      loop
-      muted
-      autoplay
-      playsinline
-      preload="metadata"
-      width="100%"
-    >
-    <source src="${props.src}" type="video/mp4" />
-    </video>`,
+            <video loop muted  autoplay
+              playsinline preload="metadata"
+              width="100%"
+            >
+              <source src="${props.src}" type="video/mp4" />
+            </video>`,
       }}
     />
   );
