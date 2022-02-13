@@ -31,6 +31,7 @@ const VideoPlayer: FunctionComponent<Props> = (props: Props) => {
       );
       setShowVisibilityLog(false);
     }
+    // eslint-disable-next-line
   }, [visibilityTime]);
   useEffect(() => {
     if (

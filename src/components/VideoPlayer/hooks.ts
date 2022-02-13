@@ -11,13 +11,14 @@ export const useIsVisible = (
   };
   const observer = useMemo(
     () => new IntersectionObserver(handleIntersection, { threshold }),
-    [ref, threshold]
+    [threshold]
   );
   useEffect(() => {
     if (ref && ref.current) observer.observe(ref.current);
     return () => {
       observer.disconnect();
     };
+    // eslint-disable-next-line
   }, []);
 
   return isVisible;
@@ -53,6 +54,7 @@ export const useVisibilityTime = (
   useEffect(() => {
     requestRef.current = requestAnimationFrame(addTime);
     return () => cancelAnimationFrame(requestRef.current);
+    // eslint-disable-next-line
   }, []);
   return visibilityTime;
 };
